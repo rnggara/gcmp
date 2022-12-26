@@ -22,7 +22,7 @@
                 </ul>
             </div>
             <div class="col-8">
-                <video width="100%" id="video" controls>
+                <video width="100%" height="500px" id="video" controls>
                     <source src="#" id="src" type="video/mp4">
                     Your browser does not support HTML video.
                 </video>
