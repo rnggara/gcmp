@@ -21,7 +21,7 @@
         <script>
             $("#fileUploadForm").submit(function (e) {
                 e.preventDefault();
-                var action = "requests.php?action=upload";
+                var action = "request.php?action=upload";
                 $("#uploadingmsg").html("Uploading...");
                 var data = new FormData(e.target);
                 $.ajax({
