@@ -3,46 +3,68 @@
         <meta charset="UTF-8">
         <title>GCP Storage File Upload using PHP</title>
     </head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
     <body>
-        <form id="fileUploadForm" method="post" enctype="multipart/form-data">
-            <input type="file" name="file"/>
-            <input type="submit" name="upload" value="Upload"/>
-            <span id="uploadingmsg"></span>
+        <div class="container rounded mt-3 p-3">
+            <button type="button" id="fileUploadForm" class="btn btn-primary">Upload Files</button>
             <hr/>
-            <strong>Response (JSON)</strong>
-            <pre id="json">json response will be shown here</pre>
+            <div class="spinner-border" id="spin" style="display: none;width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="alert alert-success" style="display: none;" role="alert">
+                Upload Success
+            </div>
             
             <hr/>
-            <strong>Public Link</strong> <span>(https://storage.googleapis.com/[BUCKET_NAME]/[OBJECT_NAME])</span><br/>
-            <b>Note:</b> we can use this link only if object or the whole bucket has made public, which in our case has already made bucket public<br/>
-            <div id="output"></div>
-        </form>
+        </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
         <script>
-            $("#fileUploadForm").submit(function (e) {
-                e.preventDefault();
-                var action = "request.php?action=upload";
-                $("#uploadingmsg").html("Uploading...");
-                var data = new FormData(e.target);
+            $("#spin").hide()
+            $("#fileUploadForm").click(function(e){
+                $("#spin").show()
                 $.ajax({
-                    type: 'POST',
-                    url: action,
-                    data: data, 
-                    /*THIS MUST BE DONE FOR FILE UPLOADING*/
-                    contentType: false,
-                    processData: false,
-                }).done(function (response) {
-                    $("#uploadingmsg").html("");
-                    $("#json").html(JSON.stringify(response, null, 4));
-                    //https://storage.googleapis.com/[BUCKET_NAME]/[OBJECT_NAME]
-                    $("#output").html('<a href="https://storage.googleapis.com/' + response.data.bucket + '/' + response.data.name + '"><i>https://storage.googleapis.com/' + response.data.bucket + '/' + response.data.name + '</i></a>');
-                    if(response.data.contentType === 'image/jpeg' || response.data.contentType === 'image/jpg' || response.data.contentType === 'image/png') {
-                        $("#output").append('<br/><img src="https://storage.googleapis.com/' + response.data.bucket + '/' + response.data.name + '"/>');
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                console.log(percentComplete);
+                                $('.progress').css({
+                                    width: percentComplete * 100 + '%'
+                                });
+                                if (percentComplete === 1) {
+                                    $('.progress').addClass('hide');
+                                }
+                            }
+                        }, false);
+                        xhr.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                console.log(percentComplete);
+                                $('.progress').css({
+                                    width: percentComplete * 100 + '%'
+                                });
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    type: 'GET',
+                    url: "request.php?action=upload",
+                    // data: data,
+                    success: function (data) {
+                        $("#spin").hide()
+                        $("div.alert").show()
                     }
-                }).fail(function (data) {
-                    //any message
-                });
-            });  
+                })
+            })
         </script>
     </body>
 </html>

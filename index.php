@@ -46,12 +46,25 @@
                 type : "get",
                 dataType : "json",
                 success : function(resp){
+                    var li = ""
                     if(resp.success){
-                        var li = ""
-                        resp.data.forEach(function(item){
-                            var _name = item.name.split("/")
-                            li += `<li class='list-group-item'><a href='#' onclick="change_video('${item.mediaLink}')">${_name[1]}</a></li>`
-                        })
+                        var _li = 0
+                        if(resp.data.length > 0){
+                            resp.data.forEach(function(item){
+                                var _name = item.name.split("/")
+                                if(_name[1] !== ""){
+                                    _li++
+                                    li += `<li class='list-group-item'><a href='#' onclick="change_video('${item.mediaLink}')">${_name[1]}</a></li>`
+                                }
+                            })
+
+                            if(_li == 0){
+                                li += `<li class='list-group-item'>No Data Found</li>`
+                            }
+
+                        } else {
+                            li += `<li class='list-group-item'>No Data Found</li>`
+                        }
                     } else {
                         li += `<li class='list-group-item'>No Data Found</li>`
                     }
