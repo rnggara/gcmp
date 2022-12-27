@@ -17,6 +17,7 @@
     <div class="container rounded mt-3 p-3 bg-white">
         <div class="row">
             <div class="col-4">
+                <button type="button" class="btn btn-primary btn-sm" onclick="load_videos()">Refresh</button>
                 <ul class="list-group list-group-flush list-group-numbered" id="list-num">
                     
                 </ul>
@@ -38,7 +39,8 @@
             $("#src").attr("src", file_name)
             $("#video")[0].load()
         }
-        $(document).ready(function(){
+        function load_videos(){
+            $("#list-num").html("")
             $.ajax({
                 url : "request.php?action=list",
                 type : "get",
@@ -57,6 +59,10 @@
                     $("#list-num").append(li)
                 }
             })
+        }
+
+        $(document).ready(function(){
+            load_videos()
         })
     </script>
 </body>
