@@ -27,7 +27,6 @@ if ($action == 'upload') {
     $response['code'] = "200";
     if ($_FILES['file']['error'] != 4) {
         //set which bucket to work in
-        $bucketName = "cloud-test-bucket-1";
         // get local file for upload testing
         $fileContent = file_get_contents($_FILES["file"]["tmp_name"]);
         // NOTE: if 'folder' or 'tree' is not exist then it will be automatically created !
